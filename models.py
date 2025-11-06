@@ -9,4 +9,9 @@ class GameCreate(BaseModel):
 
 
 class Game(BaseModel):
-    id:int
+    id: int
+    name: str
+    description: str
+    price: float
+    genre: str
+    release_date: str

@@ -61,7 +61,7 @@ def read_games() -> List[Game]:
 def read_game(game_id: int) -> Optional[Game]:
     connection = create_connection()
     cursor = connection.cursor()
-    # pass parameter as tuple
+    
     cursor.execute("SELECT * FROM games WHERE id = ?", (game_id,))
     row = cursor.fetchone()
     connection.close()
@@ -96,4 +96,47 @@ def delete_game(game_id: int) -> bool:
     deleted = cursor.rowcount
     connection.close()
     return deleted > 0
-# ...existing code...
+
+def search_games(name: str = None, genre: str = None, min_price: float = None, max_price: float = None, release_date: str = None) -> List[Game]:
+    connection = create_connection()
+    cursor = connection.cursor()
+    
+    query = "SELECT * FROM games WHERE 1=1"
+    params = []
+    
+    if name:
+        query += " AND name LIKE ?"
+        params.append(f"%{name}%")
+    
+    if genre:
+        query += " AND genre LIKE ?"
+        params.append(f"%{genre}%")
+    
+    if min_price is not None:
+        query += " AND price >= ?"
+        params.append(min_price)
+    
+    if max_price is not None:
+        query += " AND price <= ?"
+        params.append(max_price)
+    
+    if release_date:
+        query += " AND release_date LIKE ?"
+        params.append(f"%{release_date}%")
+    
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+    connection.close()
+    
+    games = [
+        Game(
+            id=row["id"],
+            name=row["name"],
+            description=row["description"],
+            price=row["price"],
+            genre=row["genre"],
+            release_date=row["release_date"]
+        )
+        for row in rows
+    ]
+    return games
