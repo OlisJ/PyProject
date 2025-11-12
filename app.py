@@ -48,9 +48,8 @@ def main():
     else:
         st.write("Use the search form on the left to find games!")
 
-    # Add game form in the right sidebar
     with st.sidebar:
-        st.markdown("---")  # Add a separator between search and add forms
+        st.markdown("---") 
         st.subheader("Add New Game")
         with st.form("add_game_form"):
             new_name = st.text_input("Game Name*")
@@ -74,7 +73,7 @@ def main():
                         game_id = database.create_game(new_game)
                         st.success(f"Successfully added {new_name} to the database!")
                         
-                        # Clear the search results to show updated data
+                        
                         if 'search_results' in st.session_state:
                             del st.session_state.search_results
                             st.experimental_rerun()
